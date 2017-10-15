@@ -1,0 +1,25 @@
+# Compiled and log files #
+###############################
+*.log
+lovetweets
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.heartbeat
+
+# IDE generated files #
+#######################
+.idea
+*~
+.goutputstream*
+.c9revisions
+.settings
+.swp
+.tmp
