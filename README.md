@@ -1,6 +1,16 @@
 TweetHog - Stream, filter and like Twitter status updates
 =========================================================
 
+This tool provides an easy way to stream, filter and optionally
+like tweets based on topic, language and user preferences. It is similar
+to commercial SaaS offerings such as TweetFull, RoboLike or Twitfox
+that start at 10 USD / month.
+
+* TweetHog is free, fast and doesn't require setting up a server
+* You stay in control of your data and don't need to give access to your Twitter account
+* You can improve your Go skills if you choose to improve and adapt it
+to your specific needs (please send a pull request)
+
 Installation
 ------------
 Make sure you got the latest version of Go installed on your computer.
@@ -27,8 +37,8 @@ Note: Due to an [issue](https://github.com/dghubble/go-twitter/issues/61)
 with the go-twitter library, you won't see any error when using
 invalid credentials. We're working on it.
 
-Usage
------
+Example Usage
+-------------
 ```
 # tweethog -t cat -t dog -l en --no-retweets --like
 Started streaming Twitter status updates on Mon, 16 Oct 2017 15:17:02 CEST...
