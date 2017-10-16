@@ -1,9 +1,11 @@
-# Compiled and log files #
-###############################
+# Compiled, config and log files #
+##################################
 *.log
-lovetweets
+*.yml
+!*.example.yml
+tweethog
 
-# OS generated files #
+# Generated files #
 ######################
 .DS_Store
 .DS_Store?
@@ -13,9 +15,6 @@ lovetweets
 ehthumbs.db
 Thumbs.db
 .heartbeat
-
-# IDE generated files #
-#######################
 .idea
 *~
 .goutputstream*
@@ -23,3 +22,4 @@ Thumbs.db
 .settings
 .swp
 .tmp
+/vendor/
