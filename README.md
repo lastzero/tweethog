@@ -1,14 +1,10 @@
 TweetHog - Stream, filter and like Twitter status updates
 =========================================================
 
-Build
------
+Installation
+------------
 ```
-git clone https://github.com/lastzero/tweethog.git
-cd tweethog
-go get -u github.com/golang/dep/cmd/dep
-dep ensure
-go build
+go get github.com/lastzero/tweethog
 ```
 
 Configuration
@@ -17,10 +13,14 @@ Configuration
 2. Create your own Twitter API keys & tokens on https://apps.twitter.com/app/new
 3. Put them in config.yml
 
+Note: Due to an [issue](https://github.com/dghubble/go-twitter/issues/61)
+with the go-twitter library, you won't see any error when using
+invalid credentials. We're working on it.
+
 Usage
 -----
 ```
-# ./tweethog -t cat -l en --no-retweets --like
+# tweethog -t cat -l en --no-retweets --like
 Started streaming Twitter status updates on Mon, 16 Oct 2017 15:17:02 CEST...
 Topics      : cat
 Languages   : en
