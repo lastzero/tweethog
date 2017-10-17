@@ -13,9 +13,7 @@ to commercial SaaS offerings such as TweetFull, RoboLike or Twitfox. However...
 
 Installation
 ------------
-Make sure you got the latest version of Go installed on your computer.
-
-It can be downloaded for free at https://golang.org/dl/.
+Make sure you got the latest version of Go installed on your computer. It can be downloaded for free at https://golang.org/dl/.
 
 Then open a terminal and enter:
 
@@ -27,7 +25,7 @@ Configuration
 -------------
 In order to stream status updates, TweetHog needs access to the Twitter API:
 
-1. Copy (or rename) config.example.yml to config.yml
+1. Copy (or rename) [config.example.yml](config.example.yml) to config.yml
 2. Create your own Twitter API keys & tokens on https://apps.twitter.com/app/new
 3. Put them in config.yml by replacing the placeholders
 
