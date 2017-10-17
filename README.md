@@ -7,8 +7,7 @@ to commercial SaaS offerings such as TweetFull, RoboLike or Twitfox. However...
 
 * TweetHog is free, fast and doesn't require setting up a server
 * You stay in control of your data and don't need to give access to your Twitter account
-* You can improve your Go skills if you choose to improve and adapt it
-to your specific needs
+* You can improve your Go skills if you choose to adapt it to your specific needs
 
 ![TweetHog](logo.png)
 
