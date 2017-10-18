@@ -12,12 +12,14 @@ import (
 	"github.com/kylelemons/go-gypsy/yaml"
 	"strings"
 	"time"
+	"math/rand"
+	"sync"
 )
 
 func main() {
 	app := cli.NewApp()
-	app.Usage = "Stream, filter and like Twitter status updates"
-	app.Version = "0.2.0"
+	app.Usage = "Stream, filter and react to Twitter status updates"
+	app.Version = "0.3.0"
 	app.Copyright = "Michael Mayer <michael@liquidbytes.net>"
 
 	app.Flags = cliFlags
@@ -34,34 +36,48 @@ type TweethogConfig struct {
 	accessSecret   string
 }
 
+type LastLike struct {
+	lastLike time.Time
+	sync.Mutex
+}
+
+var lastLike LastLike
+
+type LikeUserNames struct {
+	userNames map[string]time.Time
+	sync.Mutex
+}
+
+var likeUserNames LikeUserNames
+
 var cliFlags = []cli.Flag{
 	cli.StringSliceFlag{
-		Name: "topic, t",
-		Usage: "Stream filter topic (cat, dog, fish, ...)",
+		Name:  "topic, t",
+		Usage: "Stream filter topic e.g. cat, dog, fish",
 	},
 	cli.StringSliceFlag{
-		Name: "lang, l",
-		Usage: "Stream filter language (en, de, fr, ...)",
+		Name:  "lang, l",
+		Usage: "Stream filter language e.g. en, de, fr",
 	},
 	cli.IntFlag{
 		Name:  "max-followers",
 		Value: 5000,
-		Usage: "User max follower count (0 for unlimited)",
+		Usage: "User max followers, 0 for unlimited",
 	},
 	cli.IntFlag{
 		Name:  "min-followers",
 		Value: 5,
-		Usage: "User min follower count",
+		Usage: "User min followers",
 	},
 	cli.IntFlag{
 		Name:  "max-following",
 		Value: 5000,
-		Usage: "User max following count (0 for unlimited)",
+		Usage: "User max following, 0 for unlimited",
 	},
 	cli.IntFlag{
 		Name:  "min-following",
 		Value: 5,
-		Usage: "User min following count",
+		Usage: "User min following",
 	},
 	cli.BoolFlag{
 		Name:  "no-retweets",
@@ -73,7 +89,11 @@ var cliFlags = []cli.Flag{
 	},
 	cli.BoolFlag{
 		Name:  "like",
-		Usage: "Like tweets",
+		Usage: "Like all matching tweets",
+	},
+	cli.BoolFlag{
+		Name:  "smart-like",
+		Usage: "Likes tweets with random delay and rate limit",
 	},
 	cli.StringFlag{
 		Name:  "config, c",
@@ -149,10 +169,6 @@ func streamTweets(c *cli.Context) error {
 		handleTweet(tweet, c, client)
 	}
 
-	// demux.All = func(message interface{}) {
-	//	fmt.Printf("%#v", message)
-	// }
-
 	fmt.Printf("Started streaming Twitter status updates on %s...\n", time.Now().Format(time.RFC1123))
 
 	if c.GlobalString("config") != "config.yml" {
@@ -163,7 +179,7 @@ func streamTweets(c *cli.Context) error {
 	fmt.Printf("Languages   : %s\n", strings.Join(c.GlobalStringSlice("lang"), ", "))
 	fmt.Printf("URLs        : %t\n", !c.GlobalBool("no-urls"))
 	fmt.Printf("Retweets    : %t\n", !c.GlobalBool("no-retweets"))
-	fmt.Printf("Like tweets : %t\n", c.GlobalBool("like"))
+	fmt.Printf("Like tweets : %t\n", c.GlobalBool("like") || c.GlobalBool("smart-like"))
 
 	// FILTER
 	filterParams := &twitter.StreamFilterParams{
@@ -201,7 +217,7 @@ func handleTweet(tweet *twitter.Tweet, c *cli.Context, client *twitter.Client) {
 		return
 	}
 
-	if c.GlobalBool("no-urls") && strings.Contains(tweet.Text, "://") {
+	if c.GlobalBool("no-urls") && tweetContainsUrl(tweet) {
 		fmt.Print(".")
 		return
 	}
@@ -227,13 +243,69 @@ func handleTweet(tweet *twitter.Tweet, c *cli.Context, client *twitter.Client) {
 		tweet.User.FavouritesCount,
 		tweet.Text)
 
-	if c.GlobalBool("like") {
-		createParams := &twitter.FavoriteCreateParams{
-			ID: tweet.ID,
-		}
-
-		client.Favorites.Create(createParams)
-
-		fmt.Println("Liked ❤️")
+	if c.GlobalBool("smart-like") {
+		go smartLikeTweet(tweet, client)
+	} else if c.GlobalBool("like") {
+		likeTweet(tweet, client)
 	}
+}
+
+func tweetContainsUrl(tweet *twitter.Tweet) bool {
+	return strings.Contains(tweet.Text, "://")
+}
+
+func likeTweet(tweet *twitter.Tweet, client *twitter.Client) {
+	createParams := &twitter.FavoriteCreateParams{
+		ID: tweet.ID,
+	}
+
+	client.Favorites.Create(createParams)
+
+	fmt.Printf("Liked tweet %d ❤️\n", tweet.ID)
+}
+
+func random(min, max int) int {
+	rand.Seed(time.Now().Unix())
+	return rand.Intn(max-min) + min
+}
+
+func smartLikeTweet(tweet *twitter.Tweet, client *twitter.Client) {
+	now := time.Now()
+
+	if lastUserLikeTime, ok := likeUserNames.userNames[tweet.User.ScreenName]; ok && now.Sub(lastUserLikeTime) < time.Duration(48*time.Hour) {
+		fmt.Println("Skipped Like because of user rate limit 🐷")
+		return
+	}
+
+	if now.Sub(lastLike.lastLike) < time.Duration(120*time.Second) {
+		fmt.Println("Skipped Like because of global rate limit ⏳")
+		return
+	}
+
+	lastLike.Lock()
+	lastLike.lastLike = now
+	lastLike.Unlock()
+
+	likeUserNames.Lock()
+
+	if likeUserNames.userNames == nil {
+		likeUserNames.userNames = make(map[string]time.Time)
+	}
+
+	likeUserNames.userNames[tweet.User.ScreenName] = now
+	likeUserNames.Unlock()
+
+	randomSeconds := time.Duration(random(30, 240))
+
+	fmt.Printf("Going to like tweet %d after %d seconds ⏰\n", tweet.ID, randomSeconds)
+
+	time.Sleep(time.Second * randomSeconds)
+
+	createParams := &twitter.FavoriteCreateParams{
+		ID: tweet.ID,
+	}
+
+	client.Favorites.Create(createParams)
+
+	fmt.Printf("\nLiked tweet %d ❤️\n", tweet.ID)
 }

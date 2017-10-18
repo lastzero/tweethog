@@ -3,6 +3,7 @@
 *.log
 *.yml
 !*.example.yml
+!.travis.yml
 tweethog
 
 # Generated files #
