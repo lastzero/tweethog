@@ -19,7 +19,7 @@ import (
 func main() {
 	app := cli.NewApp()
 	app.Usage = "Stream, filter and react to Twitter status updates"
-	app.Version = "0.3.0"
+	app.Version = "0.4.0"
 	app.Copyright = "Michael Mayer <michael@liquidbytes.net>"
 
 	app.Flags = cliFlags
@@ -79,9 +79,27 @@ var cliFlags = []cli.Flag{
 		Value: 5,
 		Usage: "User min following",
 	},
+	cli.IntFlag{
+		Name:  "max-tags",
+		Value: 2,
+		Usage: "Max number of hash #tags",
+	},
+	cli.IntFlag{
+		Name:  "max-mentions",
+		Value: 1,
+		Usage: "Max number of user @mentions",
+	},
 	cli.BoolFlag{
-		Name:  "no-retweets",
-		Usage: "Exclude tweets starting with RT or @",
+		Name:  "retweets",
+		Usage: "Include tweets starting with RT",
+	},
+	cli.BoolFlag{
+		Name:  "replies",
+		Usage: "Include tweets starting with @",
+	},
+	cli.BoolFlag{
+		Name:  "via",
+		Usage: "Include tweets containing via @",
 	},
 	cli.BoolFlag{
 		Name:  "no-urls",
@@ -175,11 +193,15 @@ func streamTweets(c *cli.Context) error {
 		fmt.Printf("Config      : %s\n", c.GlobalString("config"))
 	}
 
-	fmt.Printf("Topics      : %s\n", strings.Join(c.GlobalStringSlice("topic"), ", "))
-	fmt.Printf("Languages   : %s\n", strings.Join(c.GlobalStringSlice("lang"), ", "))
-	fmt.Printf("URLs        : %t\n", !c.GlobalBool("no-urls"))
-	fmt.Printf("Retweets    : %t\n", !c.GlobalBool("no-retweets"))
-	fmt.Printf("Like tweets : %t\n", c.GlobalBool("like") || c.GlobalBool("smart-like"))
+	fmt.Printf("Topics       : %s\n", strings.Join(c.GlobalStringSlice("topic"), ", "))
+	fmt.Printf("Languages    : %s\n", strings.Join(c.GlobalStringSlice("lang"), ", "))
+	fmt.Printf("URLs         : %t\n", !c.GlobalBool("no-urls"))
+	fmt.Printf("Retweets     : %t\n", c.GlobalBool("retweets"))
+	fmt.Printf("Replies      : %t\n", c.GlobalBool("replies"))
+	fmt.Printf("Via          : %t\n", c.GlobalBool("via"))
+	fmt.Printf("Max mentions : %d\n", c.GlobalInt("max-mentions"))
+	fmt.Printf("Max tags     : %d\n", c.GlobalInt("max-tags"))
+	fmt.Printf("Like tweets  : %t\n", c.GlobalBool("like") || c.GlobalBool("smart-like"))
 
 	// FILTER
 	filterParams := &twitter.StreamFilterParams{
@@ -209,10 +231,17 @@ func streamTweets(c *cli.Context) error {
 }
 
 func handleTweet(tweet *twitter.Tweet, c *cli.Context, client *twitter.Client) {
-	if c.GlobalBool("no-retweets") && (tweet.Retweeted ||
-		strings.Contains(tweet.Text, "via @") ||
-		strings.HasPrefix(tweet.Text, "RT") ||
-		strings.HasPrefix(tweet.Text, "@")) {
+	if !c.GlobalBool("retweets") && (tweet.Retweeted || strings.HasPrefix(tweet.Text, "RT")) {
+		fmt.Print(".")
+		return
+	}
+
+	if !c.GlobalBool("replies") && strings.HasPrefix(tweet.Text, "@") {
+		fmt.Print(".")
+		return
+	}
+
+	if !c.GlobalBool("via") && strings.Contains(tweet.Text, "via @") {
 		fmt.Print(".")
 		return
 	}
@@ -230,6 +259,16 @@ func handleTweet(tweet *twitter.Tweet, c *cli.Context, client *twitter.Client) {
 
 	if (tweet.User.FriendsCount > c.GlobalInt("max-following") && c.GlobalInt("max-following") > 0) ||
 		tweet.User.FriendsCount < c.GlobalInt("min-following") {
+		fmt.Print(".")
+		return
+	}
+
+	if strings.Count(tweet.Text, "#") <= c.GlobalInt("max-tags") {
+		fmt.Print(".")
+		return
+	}
+
+	if strings.Count(tweet.Text, "@") <= c.GlobalInt("max-mentions") {
 		fmt.Print(".")
 		return
 	}
