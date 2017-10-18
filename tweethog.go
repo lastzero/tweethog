@@ -263,12 +263,12 @@ func handleTweet(tweet *twitter.Tweet, c *cli.Context, client *twitter.Client) {
 		return
 	}
 
-	if strings.Count(tweet.Text, "#") <= c.GlobalInt("max-tags") {
+	if strings.Count(tweet.Text, "#") > c.GlobalInt("max-tags") {
 		fmt.Print(".")
 		return
 	}
 
-	if strings.Count(tweet.Text, "@") <= c.GlobalInt("max-mentions") {
+	if strings.Count(tweet.Text, "@") > c.GlobalInt("max-mentions") {
 		fmt.Print(".")
 		return
 	}
