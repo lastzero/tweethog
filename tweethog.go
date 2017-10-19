@@ -19,7 +19,7 @@ import (
 func main() {
 	app := cli.NewApp()
 	app.Usage = "Stream, filter and react to Twitter status updates"
-	app.Version = "0.4.1"
+	app.Version = "0.4.2"
 	app.Copyright = "Michael Mayer <michael@liquidbytes.net>"
 
 	app.Flags = cliFlags
@@ -102,8 +102,8 @@ var cliFlags = []cli.Flag{
 		Usage: "Include tweets containing via @",
 	},
 	cli.BoolFlag{
-		Name:  "no-urls",
-		Usage: "Exclude tweets containing URLs",
+		Name:  "urls",
+		Usage: "Include tweets containing URLs",
 	},
 	cli.BoolFlag{
 		Name:  "like",
@@ -195,7 +195,7 @@ func streamTweets(c *cli.Context) error {
 
 	fmt.Printf("Topics       : %s\n", strings.Join(c.GlobalStringSlice("topic"), ", "))
 	fmt.Printf("Languages    : %s\n", strings.Join(c.GlobalStringSlice("lang"), ", "))
-	fmt.Printf("URLs         : %t\n", !c.GlobalBool("no-urls"))
+	fmt.Printf("URLs         : %t\n", c.GlobalBool("urls"))
 	fmt.Printf("Retweets     : %t\n", c.GlobalBool("retweets"))
 	fmt.Printf("Replies      : %t\n", c.GlobalBool("replies"))
 	fmt.Printf("Via          : %t\n", c.GlobalBool("via"))
@@ -246,7 +246,7 @@ func handleTweet(tweet *twitter.Tweet, c *cli.Context, client *twitter.Client) {
 		return
 	}
 
-	if c.GlobalBool("no-urls") && tweetContainsUrl(tweet) {
+	if !c.GlobalBool("urls") && tweetContainsUrl(tweet) {
 		fmt.Print(".")
 		return
 	}
@@ -334,7 +334,7 @@ func smartLikeTweet(tweet *twitter.Tweet, client *twitter.Client) {
 	likeUserNames.userNames[tweet.User.ScreenName] = now
 	likeUserNames.Unlock()
 
-	randomSeconds := time.Duration(random(30, 240))
+	randomSeconds := time.Duration(random(45, 300))
 
 	fmt.Printf("Going to like tweet %d after %d seconds ⏰\n", tweet.ID, randomSeconds)
 
