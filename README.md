@@ -1,10 +1,10 @@
 TweetHog - Stream, filter and react to Twitter status updates
 =============================================================
 
-[![GitHub release](http://img.shields.io/github/release/lastzero/tweethog.svg?style=flat-square)][release]
-[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)][license]
+[![GitHub issues](https://img.shields.io/github/issues/lastzero/tweethog.svg)][issues]
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)][license]
 
-[release]: https://github.com/lastzero/tweethog/releases
+[issues]: https://github.com/lastzero/tweethog/issues
 [license]: https://github.com/lastzero/tweethog/blob/master/LICENSE
 
 This tool provides an easy way to stream, filter and optionally
