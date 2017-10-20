@@ -62,7 +62,7 @@ Max mentions : 1
 Max tags     : 2
 Like tweets  : true
 
-ID: 921269579980115969  Date: Fri Oct 20 06:59:18 +0000 2017  User: @onthelooseliam  Following: 563  Followers: 825  Likes: 9248
+ID: 921269579980115969  User: @onthelooseliam  Following: 563  Followers: 825  Likes: 9248
 >>> My cat is playing with my bun and I'm terrified
 Liked ❤️
 ```
