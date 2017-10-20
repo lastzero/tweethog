@@ -62,9 +62,9 @@ Name                     | Description
 -------------------------|------------------------------------------------------------------
 --topic value, -t value  | Stream filter topic e.g. cat, dog, fish
 --lang value, -l value   | Stream filter language e.g. en, de, fr
---max-followers value    | User max followers, 0 for unlimited (default: 5000)
+--max-followers value    | User max followers, 0 for unlimited (default: 0)
 --min-followers value    | User min followers (default: 5)
---max-following value    | User max following, 0 for unlimited (default: 5000)
+--max-following value    | User max following, 0 for unlimited (default: 0)
 --min-following value    | User min following (default: 5)
 --max-tags value         | Max number of hash #tags (default: 2)
 --max-mentions value     | Max number of @mentions (default: 1)

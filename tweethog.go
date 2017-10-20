@@ -61,7 +61,6 @@ var cliFlags = []cli.Flag{
 	},
 	cli.IntFlag{
 		Name:  "max-followers",
-		Value: 5000,
 		Usage: "User max followers, 0 for unlimited",
 	},
 	cli.IntFlag{
@@ -71,7 +70,6 @@ var cliFlags = []cli.Flag{
 	},
 	cli.IntFlag{
 		Name:  "max-following",
-		Value: 5000,
 		Usage: "User max following, 0 for unlimited",
 	},
 	cli.IntFlag{
