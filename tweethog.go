@@ -19,7 +19,7 @@ import (
 func main() {
 	app := cli.NewApp()
 	app.Usage = "Stream, filter and react to Twitter status updates"
-	app.Version = "0.4.2"
+	app.Version = "0.4.3"
 	app.Copyright = "Michael Mayer <michael@liquidbytes.net>"
 
 	app.Flags = cliFlags
