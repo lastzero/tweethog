@@ -44,12 +44,10 @@ invalid credentials. We're working on it.
 Example Usage
 -------------
 ```
-# tweethog -t cat -t dog -l en --no-retweets --like
+# tweethog -t cat -l en --like
 Started streaming Twitter status updates on Mon, 16 Oct 2017 15:17:02 CEST...
-Topics      : cat, dog
+Topics      : cat
 Languages   : en
-URLs        : true
-Retweets    : false
 Like tweets : true
 ...
 ID: 919915098877190144  User: @lindsseybb  Following: 78  Followers: 52  Likes: 617
@@ -68,8 +66,12 @@ Name                     | Description
 --min-followers value    | User min followers (default: 5)
 --max-following value    | User max following, 0 for unlimited (default: 5000)
 --min-following value    | User min following (default: 5)
---no-retweets            | Exclude tweets starting with RT or @
---no-urls                | Exclude tweets containing URLs
+--max-tags value         | Max number of hash #tags (default: 2)
+--max-mentions value     | Max number of @mentions (default: 1)
+--retweets               | Include tweets starting with RT
+--replies                | Include tweets starting with @
+--via                    | Include tweets containing via @
+--urls                   | Include tweets containing URLs
 --like                   | Like all matching tweets
 --smart-like             | Likes tweets with random delay and rate limit
 --config value, -c value | Config file name (default: "config.yml")

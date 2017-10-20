@@ -87,7 +87,7 @@ var cliFlags = []cli.Flag{
 	cli.IntFlag{
 		Name:  "max-mentions",
 		Value: 1,
-		Usage: "Max number of user @mentions",
+		Usage: "Max number of @mentions",
 	},
 	cli.BoolFlag{
 		Name:  "retweets",
