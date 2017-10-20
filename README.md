@@ -80,8 +80,10 @@ Name                     | Description
 
 About
 -----
-This tool was created by [Michael Mayer](https://blog.liquidbytes.net/about). It is still under
-development and not very mature. You can use it for free under the terms of the MIT license.
+This tool was created by [Michael Mayer](https://blog.liquidbytes.net/about)
+in an attempt to learn Go the agile way: Start with something small that works
+and then refactor and improve. You can use it for free and at your own risk
+under the terms of the MIT license.
 
 Please feel free to send an e-mail if you have any questions or just want to say hello.
 Contributions are most welcome, even if it's just a bug report or a tiny pull-request to fix a typo.
