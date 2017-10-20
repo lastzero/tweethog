@@ -19,12 +19,18 @@ to commercial SaaS offerings such as TweetFull, RoboLike or Twitfox. However...
 
 Installation
 ------------
-Make sure you got the latest version of Go installed on your computer. It can be downloaded for free at https://golang.org/dl/.
+Make sure you got the latest version of Go installed on your computer. It can be downloaded for free at https://golang.org/dl/. You might need to install Xcode and agree to its license first on OS X.
 
 Then open a terminal and enter:
 
 ```
 go get github.com/lastzero/tweethog
+```
+
+To update it afterwards:
+
+```
+go get -u github.com/lastzero/tweethog
 ```
 
 Configuration
@@ -45,14 +51,19 @@ Example Usage
 -------------
 ```
 # tweethog -t cat -l en --like
-Started streaming Twitter status updates on Mon, 16 Oct 2017 15:17:02 CEST...
-Topics      : cat
-Languages   : en
-Like tweets : true
-...
-ID: 919915098877190144  User: @lindsseybb  Following: 78  Followers: 52  Likes: 617
->>> Cat nip plants are resilient y'all. My pot has been tipped over numerous times,
-I haven't watered it once and it just keeps coming back.
+Started streaming Twitter status updates on Fri, 20 Oct 2017 08:59:14 CEST...
+Topics       : cat
+Languages    : en
+URLs         : false
+Retweets     : false
+Replies      : false
+Via          : false
+Max mentions : 1
+Max tags     : 2
+Like tweets  : true
+
+ID: 921269579980115969  Date: Fri Oct 20 06:59:18 +0000 2017  User: @onthelooseliam  Following: 563  Followers: 825  Likes: 9248
+>>> My cat is playing with my bun and I'm terrified
 Liked ❤️
 ```
 
