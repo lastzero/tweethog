@@ -1,9 +1,11 @@
 TweetHog - Stream, filter and react to Twitter status updates
 =============================================================
 
+[![Build Status](https://travis-ci.org/lastzero/tweethog.png?branch=master)][ci]
 [![GitHub issues](https://img.shields.io/github/issues/lastzero/tweethog.svg)][issues]
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)][license]
 
+[ci]: https://travis-ci.org/lastzero/tweethog
 [issues]: https://github.com/lastzero/tweethog/issues
 [license]: https://github.com/lastzero/tweethog/blob/master/LICENSE
 
