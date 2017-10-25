@@ -24,3 +24,12 @@
 [[constraint]]
   name = "github.com/urfave/cli"
   version = "1.20.0"
+
+[[constraint]]
+  name = "github.com/dghubble/go-twitter"
+
+[[constraint]]
+  name = "github.com/dghubble/oauth1"
+
+[[constraint]]
+  name = "github.com/kylelemons/go-gypsy"

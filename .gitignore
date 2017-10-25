@@ -4,7 +4,7 @@
 *.yml
 !*.example.yml
 !.travis.yml
-tweethog
+/tweethog
 
 # Generated files #
 ######################

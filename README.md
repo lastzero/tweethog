@@ -19,25 +19,30 @@ to commercial SaaS offerings such as TweetFull, RoboLike or Twitfox. However...
 
 Installation
 ------------
-Make sure you got the latest version of Go installed on your computer. It can be downloaded for free at https://golang.org/dl/. You might need to install Xcode and agree to its license first on OS X.
+Make sure you got the latest version of Go installed on your computer.
+It can be downloaded for free at https://golang.org/dl/.
+You might need to install Xcode and agree to its license first on OS X.
 
 Then open a terminal and enter:
 
 ```
-go get github.com/lastzero/tweethog
+go get github.com/lastzero/tweethog/cmd/tweethog
 ```
 
 To update it afterwards:
 
 ```
-go get -u github.com/lastzero/tweethog
+go get -u github.com/lastzero/tweethog/cmd/tweethog
 ```
+
+Note: Your PATH, GOPATH and GOROOT environment variables
+need to be set correctly for `go get` to work as expected.
 
 Configuration
 -------------
 In order to stream status updates, TweetHog needs access to the Twitter API:
 
-1. Copy (or rename) [config.example.yml](config.example.yml) to config.yml
+1. Copy [config.example.yml](config.example.yml) to config.yml in the directory you wish to execute the command
 2. Create your own Twitter API keys & tokens on https://apps.twitter.com/app/new
 3. Put them in config.yml by replacing the placeholders
 
