@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/lastzero/tweethog"
 	"github.com/urfave/cli"
 	"os"
-	"github.com/lastzero/tweethog"
 )
 
 func main() {
@@ -14,7 +14,7 @@ func main() {
 
 	app.Flags = cliFlags
 
-	app.Action = func (c *cli.Context) error {
+	app.Action = func(c *cli.Context) error {
 		if len(c.GlobalStringSlice("topic")) == 0 {
 			cli.ShowAppHelp(c)
 			return nil
@@ -22,15 +22,17 @@ func main() {
 
 		config := tweethog.NewConfig()
 
-		err := config.LoadFromFile(c.GlobalString("config"))
+		err := config.SetValuesFromFile(c.GlobalString("config-file"))
 
 		if err != nil {
 			return cli.NewExitError(err, 1)
 		}
 
-		client := tweethog.NewClient(config)
+		config.SetValuesFromCliContext(c)
 
-		client.StreamTopic(c)
+		stream := tweethog.NewStream(config)
+
+		stream.Start()
 
 		return nil
 	}
@@ -39,6 +41,22 @@ func main() {
 }
 
 var cliFlags = []cli.Flag{
+	cli.StringFlag{
+		Name:  "consumer-key",
+		Usage: "Twitter API consumer key",
+	},
+	cli.StringFlag{
+		Name:  "consumer-secret",
+		Usage: "Twitter API consumer secret",
+	},
+	cli.StringFlag{
+		Name:  "access-token",
+		Usage: "Twitter API access token",
+	},
+	cli.StringFlag{
+		Name:  "access-secret",
+		Usage: "Twitter API access token secret",
+	},
 	cli.StringSliceFlag{
 		Name:  "topic, t",
 		Usage: "Stream filter topic e.g. cat, dog, fish",
@@ -48,31 +66,27 @@ var cliFlags = []cli.Flag{
 		Usage: "Stream filter language e.g. en, de, fr",
 	},
 	cli.IntFlag{
+		Name:  "min-followers",
+		Usage: "User min followers",
+	},
+	cli.IntFlag{
 		Name:  "max-followers",
 		Usage: "User max followers, 0 for unlimited",
 	},
 	cli.IntFlag{
-		Name:  "min-followers",
-		Value: 5,
-		Usage: "User min followers",
+		Name:  "min-following",
+		Usage: "User min following",
 	},
 	cli.IntFlag{
 		Name:  "max-following",
 		Usage: "User max following, 0 for unlimited",
 	},
 	cli.IntFlag{
-		Name:  "min-following",
-		Value: 5,
-		Usage: "User min following",
-	},
-	cli.IntFlag{
 		Name:  "max-tags",
-		Value: 2,
 		Usage: "Max number of hash #tags",
 	},
 	cli.IntFlag{
 		Name:  "max-mentions",
-		Value: 1,
 		Usage: "Max number of @mentions",
 	},
 	cli.BoolFlag{
@@ -100,8 +114,8 @@ var cliFlags = []cli.Flag{
 		Usage: "Likes tweets with GetRandomInt delay and rate limit",
 	},
 	cli.StringFlag{
-		Name:  "config, c",
-		Usage: "Config file name",
+		Name:  "config-file, c",
+		Usage: "YAML config filename",
 		Value: "config.yml",
 	},
 }

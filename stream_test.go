@@ -1,13 +1,13 @@
 package tweethog
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestNewClient(t *testing.T) {
 	config := NewConfig()
-	client := NewClient(config)
+	client := NewStream(config)
 
-	assert.IsType(t, new(Client), client)
+	assert.IsType(t, &Stream{}, client)
 }
