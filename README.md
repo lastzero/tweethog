@@ -3,11 +3,13 @@ TweetHog - Stream, filter and react to Twitter status updates
 
 [![Build Status](https://travis-ci.org/lastzero/tweethog.png?branch=master)][ci]
 [![Code Quality](https://goreportcard.com/badge/github.com/lastzero/tweethog)][code quality]
+[![Test Coverage](https://gocover.io/_badge/github.com/lastzero/tweethog)][test coverage]
 [![GitHub issues](https://img.shields.io/github/issues/lastzero/tweethog.svg)][issues]
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)][license]
 
 [ci]: https://travis-ci.org/lastzero/tweethog
 [code quality]: https://travis-ci.org/lastzero/tweethog
+[test coverage]: http://gocover.io/github.com/lastzero/tweethog
 [issues]: https://github.com/lastzero/tweethog/issues
 [license]: https://github.com/lastzero/tweethog/blob/master/LICENSE
 
