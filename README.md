@@ -2,10 +2,12 @@ TweetHog - Stream, filter and react to Twitter status updates
 =============================================================
 
 [![Build Status](https://travis-ci.org/lastzero/tweethog.png?branch=master)][ci]
+[![Code Quality](https://goreportcard.com/badge/github.com/lastzero/tweethog)][code quality]
 [![GitHub issues](https://img.shields.io/github/issues/lastzero/tweethog.svg)][issues]
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)][license]
 
 [ci]: https://travis-ci.org/lastzero/tweethog
+[code quality]: https://travis-ci.org/lastzero/tweethog
 [issues]: https://github.com/lastzero/tweethog/issues
 [license]: https://github.com/lastzero/tweethog/blob/master/LICENSE
 
@@ -58,7 +60,7 @@ Example Usage
 -------------
 ```
 # tweethog -t cat -l en --like
-Started streaming Twitter status updates on Fri, 20 Oct 2017 08:59:14 CEST...
+Started streaming Twitter status updates on 2017-10-26 11:51:58...
 Topics       : cat
 Languages    : en
 URLs         : false
