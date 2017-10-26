@@ -61,27 +61,20 @@ invalid credentials. We're working on it.
 Example Usage
 -------------
 ```
-# ./tweethog -t trump,cat
-Topics       : trump,cat
-Languages    : en
-URLs         : false
-Retweets     : false
-Replies      : false
-Via          : false
-Max mentions : 1
-Max tags     : 2
-Like tweets  : false
-2017/10/26 14:37:56 Starting Twitter stream...
+# ./tweethog filter -t cat
+2017/10/26 22:51:41 Starting Twitter stream...
 
-ID: 923529145740558337  Date: 2017-10-26 12:38:01  User: @SonjaFazzio  Following: 128  Followers: 70  Likes: 6431
->>> Trump's fiscal year begins soon. Give it 90 days...time will reveal all this so called winning.
-I'm not holding my breath.
+spooky ass @vauseluthor (Following: 202, Followers: 2320, Likes: 87426)
+what kind of cat was it?
 
-ID: 923529152241848325  Date: 2017-10-26 12:38:02  User: @terrypruitt  Following: 407  Followers: 179  Likes: 151
->>> “Cat stretches first thing when he wakes up because he never knows when he will need to pounce.” #postrunwisdom #baltimore1/2
+Stina Dark @StinaLeicht (Following: 1157, Followers: 2801, Likes: 41886)
+Project "Inside Cat" has been abandoned. It just wasn't working. Cat cries constantly. I can't work. Dane can't sleep. Cat wins.
 
-ID: 923529161184108544  Date: 2017-10-26 12:38:05  User: @Wombleloyalist  Following: 1134  Followers: 770  Likes: 652
->>> And i have Donald trump as his assistant
+Allie @LexxMackenzie (Following: 158, Followers: 204, Likes: 16494)
+Cat Power strums on my soul
+
+322ahsiws @322ahsiws (Following: 13, Followers: 23, Likes: 2)
+Valuethon 3 years ago, I understand your cat photos
 ```
 
 Commands
