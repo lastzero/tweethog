@@ -7,7 +7,9 @@ access-secret: YOUR_TOKEN_SECRET
 max-mentions: 1
 max-tags: 2
 lang: en
-urls: true
+urls: false
 retweets: false
 replies: false
 via: false
+min-followers: 5
+min-following: 5

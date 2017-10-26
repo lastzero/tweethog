@@ -61,9 +61,8 @@ invalid credentials. We're working on it.
 Example Usage
 -------------
 ```
-# tweethog -t cat -l en --like
-Started streaming Twitter status updates on 2017-10-26 11:51:58...
-Topics       : cat
+# ./tweethog -t trump,cat
+Topics       : trump,cat
 Languages    : en
 URLs         : false
 Retweets     : false
@@ -71,21 +70,46 @@ Replies      : false
 Via          : false
 Max mentions : 1
 Max tags     : 2
-Like tweets  : true
+Like tweets  : false
+2017/10/26 14:37:56 Starting Twitter stream...
 
-ID: 921269579980115969  User: @onthelooseliam  Following: 563  Followers: 825  Likes: 9248
->>> My cat is playing with my bun and I'm terrified
-Liked ❤️
+ID: 923529145740558337  Date: 2017-10-26 12:38:01  User: @SonjaFazzio  Following: 128  Followers: 70  Likes: 6431
+>>> Trump's fiscal year begins soon. Give it 90 days...time will reveal all this so called winning.
+I'm not holding my breath.
+
+ID: 923529152241848325  Date: 2017-10-26 12:38:02  User: @terrypruitt  Following: 407  Followers: 179  Likes: 151
+>>> “Cat stretches first thing when he wakes up because he never knows when he will need to pounce.” #postrunwisdom #baltimore1/2
+
+ID: 923529161184108544  Date: 2017-10-26 12:38:05  User: @Wombleloyalist  Following: 1134  Followers: 770  Likes: 652
+>>> And i have Donald trump as his assistant
 ```
 
-Flags
------
+Commands
+--------
+
+Command   | Description
+----------|-------------------------------------------------------------
+config    | Displays all configuration values
+filter    | Shows all matching tweets without performing any action
+like      | Automatically likes all matching tweets
+smartlike | Likes tweets with random delay and rate limit
+
+Global Flags
+------------
+
 Name                          | Description
 ------------------------------|------------------------------------------------------------------
+--config-file value, -c value | YAML config filename (default: "config.yml")
 --consumer-key value          | Twitter API consumer key
 --consumer-secret value       | Twitter API consumer secret
 --access-token value          | Twitter API access token
 --access-secret value         | Twitter API access token secret
+
+
+Filter Flags
+------------
+Name                          | Description
+------------------------------|------------------------------------------------------------------
 --topic value, -t value       | Stream filter topic e.g. cat, dog, fish
 --lang value, -l value        | Stream filter language e.g. en, de, fr
 --min-followers value         | User min followers (default: 0)
@@ -98,12 +122,8 @@ Name                          | Description
 --replies                     | Include tweets starting with @
 --via                         | Include tweets containing via @
 --urls                        | Include tweets containing URLs
---like                        | Like all matching tweets
---smart-like                  | Likes tweets with GetRandomInt delay and rate limit
---config-file value, -c value | YAML config filename (default: "config.yml")
 
-All of the flags above (except `config-file` of course) can be
-set in the config file as a default. Example:
+All of the flags above can be set in the config file as a default. Example:
 
 ```
 max-mentions: 1

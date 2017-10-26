@@ -4,43 +4,139 @@ import (
 	"github.com/lastzero/tweethog"
 	"github.com/urfave/cli"
 	"os"
+	"fmt"
+	"strings"
 )
 
 func main() {
+	config := tweethog.NewConfig()
+
 	app := cli.NewApp()
 	app.Usage = "Stream, filter and react to Twitter status updates"
-	app.Version = "0.5.0"
+	app.Version = "0.6.0"
 	app.Copyright = "Michael Mayer <michael@liquidbytes.net>"
 
-	app.Flags = cliFlags
+	app.Flags = globalCliFlags
 
-	app.Action = func(c *cli.Context) error {
-		if len(c.GlobalStringSlice("topic")) == 0 {
-			cli.ShowAppHelp(c)
-			return nil
-		}
+	app.Commands = []cli.Command{
+		{
+			Name:  "config",
+			Usage: "Displays all configuration values",
+			Flags: cliFlags,
+			Action: func(c *cli.Context) {
+				config.SetValuesFromFile(c.GlobalString("config-file"))
 
-		config := tweethog.NewConfig()
+				config.SetValuesFromCliContext(c)
 
-		err := config.SetValuesFromFile(c.GlobalString("config-file"))
+				fmt.Printf("Topics        : %s\n", strings.Join(config.Filter.Topics, ", "))
+				fmt.Printf("Languages     : %s\n", strings.Join(config.Filter.Languages, ", "))
+				fmt.Printf("Min followers : %d\n", config.Filter.MinFollowers)
+				fmt.Printf("Max followers : %d\n", config.Filter.MaxFollowers)
+				fmt.Printf("Min following : %d\n", config.Filter.MinFollowing)
+				fmt.Printf("Max following : %d\n", config.Filter.MaxFollowing)
+				fmt.Printf("Max mentions  : %d\n", config.Filter.MaxMentions)
+				fmt.Printf("Max tags      : %d\n", config.Filter.MaxTags)
+				fmt.Printf("URLs          : %t\n", config.Filter.URLs)
+				fmt.Printf("Retweets      : %t\n", config.Filter.Retweets)
+				fmt.Printf("Replies       : %t\n", config.Filter.Replies)
+				fmt.Printf("Via           : %t\n", config.Filter.Via)
+			},
+		},
+		{
+			Name:  "filter",
+			Usage: "Shows all matching tweets without performing any action",
+			Flags: cliFlags,
+			Action: func(c *cli.Context) {
+				startStream(
+					c,
+					config,
+					func(status *tweethog.Status) {
+						if status.MatchesFilter(config.Filter) {
+							printTweet(status)
+						}
+					},
+				)
+			},
+		},
+		{
+			Name:  "like",
+			Usage: "Automatically likes all matching tweets",
+			Flags: cliFlags,
+			Action: func(c *cli.Context) {
+				startStream(
+					c,
+					config,
+					func(status *tweethog.Status) {
+						if status.MatchesFilter(config.Filter) {
+							printTweet(status)
 
-		if err != nil {
-			return cli.NewExitError(err, 1)
-		}
+							status.Like()
+						}
+					},
+				)
+			},
+		},
+		{
+			Name:  "smartlike",
+			Usage: "Likes tweets with random delay and rate limit",
+			Flags: cliFlags,
+			Action: func(c *cli.Context) {
+				startStream(
+					c,
+					config,
+					func(status *tweethog.Status) {
+						if status.MatchesFilter(config.Filter) {
+							printTweet(status)
 
-		config.SetValuesFromCliContext(c)
-
-		stream := tweethog.NewStream(config)
-
-		stream.Start()
-
-		return nil
+							go status.SmartLike()
+						}
+					},
+				)
+			},
+		},
 	}
 
 	app.Run(os.Args)
 }
 
-var cliFlags = []cli.Flag{
+func printTweet(status *tweethog.Status) {
+	fmt.Printf("\n%s @%s (Following: %d, Followers: %d, Likes: %d)\n%s\n",
+		status.GetName(),
+		status.GetScreenName(),
+		status.GetFriendsCount(),
+		status.GetFollowersCount(),
+		status.GetFavouritesCount(),
+		status.GetText(),
+	)
+}
+
+func startStream(c *cli.Context, config *tweethog.Config, action func(status *tweethog.Status)) error {
+	err := config.SetValuesFromFile(c.GlobalString("config-file"))
+
+	if err != nil {
+		return cli.NewExitError(err, 1)
+	}
+
+	config.SetValuesFromCliContext(c)
+
+	if len(config.Filter.Topics) == 0 {
+		cli.ShowAppHelp(c)
+		return nil
+	}
+
+	stream := tweethog.NewStream(config)
+
+	stream.Start(action)
+
+	return nil
+}
+
+var globalCliFlags = []cli.Flag{
+	cli.StringFlag{
+		Name:  "config-file, c",
+		Usage: "YAML config filename",
+		Value: "config.yml",
+	},
 	cli.StringFlag{
 		Name:  "consumer-key",
 		Usage: "Twitter API consumer key",
@@ -57,6 +153,9 @@ var cliFlags = []cli.Flag{
 		Name:  "access-secret",
 		Usage: "Twitter API access token secret",
 	},
+}
+
+var cliFlags = []cli.Flag{
 	cli.StringSliceFlag{
 		Name:  "topic, t",
 		Usage: "Stream filter topic e.g. cat, dog, fish",
@@ -104,18 +203,5 @@ var cliFlags = []cli.Flag{
 	cli.BoolFlag{
 		Name:  "urls",
 		Usage: "Include tweets containing URLs",
-	},
-	cli.BoolFlag{
-		Name:  "like",
-		Usage: "Like all matching tweets",
-	},
-	cli.BoolFlag{
-		Name:  "smart-like",
-		Usage: "Likes tweets with GetRandomInt delay and rate limit",
-	},
-	cli.StringFlag{
-		Name:  "config-file, c",
-		Usage: "YAML config filename",
-		Value: "config.yml",
 	},
 }

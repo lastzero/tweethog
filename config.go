@@ -16,7 +16,11 @@ type Config struct {
 	// YAML config file name
 	ConfigFile string
 
-	// Filters
+	// Tweet filter
+	Filter *Filters
+}
+
+type Filters struct {
 	Topics       []string
 	Languages    []string
 	MinFollowers int
@@ -29,14 +33,12 @@ type Config struct {
 	Replies      bool
 	Via          bool
 	URLs         bool
-
-	// Actions
-	Like      bool
-	SmartLike bool
 }
 
 func NewConfig() *Config {
-	return &Config{}
+	return &Config{
+		Filter: &Filters{},
+	}
 }
 
 func (config *Config) SetValuesFromFile(fileName string) error {
@@ -52,51 +54,51 @@ func (config *Config) SetValuesFromFile(fileName string) error {
 	config.AccessSecret, _ = yamlConfig.Get("access-secret")
 
 	if topics, err := yamlConfig.Get("topic"); err == nil {
-		config.Topics = strings.Split(topics, ",")
+		config.Filter.Topics = strings.Split(topics, ",")
 	}
 
 	if languages, err := yamlConfig.Get("lang"); err == nil {
-		config.Languages = strings.Split(languages, ",")
+		config.Filter.Languages = strings.Split(languages, ",")
 	}
 
 	if minFollowers, err := yamlConfig.GetInt("min-followers"); err == nil {
-		config.MinFollowers = int(minFollowers)
+		config.Filter.MinFollowers = int(minFollowers)
 	}
 
 	if maxFollowers, err := yamlConfig.GetInt("max-followers"); err == nil {
-		config.MaxFollowers = int(maxFollowers)
+		config.Filter.MaxFollowers = int(maxFollowers)
 	}
 
 	if minFollowing, err := yamlConfig.GetInt("min-following"); err == nil {
-		config.MinFollowing = int(minFollowing)
+		config.Filter.MinFollowing = int(minFollowing)
 	}
 
 	if maxFollowing, err := yamlConfig.GetInt("max-following"); err == nil {
-		config.MaxFollowing = int(maxFollowing)
+		config.Filter.MaxFollowing = int(maxFollowing)
 	}
 
 	if maxTags, err := yamlConfig.GetInt("max-tags"); err == nil {
-		config.MaxTags = int(maxTags)
+		config.Filter.MaxTags = int(maxTags)
 	}
 
 	if maxMentions, err := yamlConfig.GetInt("max-mentions"); err == nil {
-		config.MaxMentions = int(maxMentions)
+		config.Filter.MaxMentions = int(maxMentions)
 	}
 
 	if retweets, err := yamlConfig.GetBool("retweets"); err == nil {
-		config.Retweets = retweets
+		config.Filter.Retweets = retweets
 	}
 
 	if replies, err := yamlConfig.GetBool("replies"); err == nil {
-		config.Replies = replies
+		config.Filter.Replies = replies
 	}
 
 	if via, err := yamlConfig.GetBool("via"); err == nil {
-		config.Via = via
+		config.Filter.Via = via
 	}
 
 	if urls, err := yamlConfig.GetBool("urls"); err == nil {
-		config.URLs = urls
+		config.Filter.URLs = urls
 	}
 
 	return nil
@@ -123,60 +125,52 @@ func (config *Config) SetValuesFromCliContext(c *cli.Context) error {
 		config.ConfigFile = c.GlobalString("config-file")
 	}
 
-	if c.GlobalIsSet("topic") || c.GlobalIsSet("t") {
-		config.Topics = c.GlobalStringSlice("topic")
+	if c.IsSet("topic") || c.IsSet("t") {
+		config.Filter.Topics = c.StringSlice("topic")
 	}
 
-	if c.GlobalIsSet("lang") || c.GlobalIsSet("l") {
-		config.Languages = c.GlobalStringSlice("lang")
+	if c.IsSet("lang") || c.IsSet("l") {
+		config.Filter.Languages = c.StringSlice("lang")
 	}
 
-	if c.GlobalIsSet("min-followers") {
-		config.MinFollowers = c.GlobalInt("min-followers")
+	if c.IsSet("min-followers") {
+		config.Filter.MinFollowers = c.Int("min-followers")
 	}
 
-	if c.GlobalIsSet("max-followers") {
-		config.MaxFollowers = c.GlobalInt("max-followers")
+	if c.IsSet("max-followers") {
+		config.Filter.MaxFollowers = c.Int("max-followers")
 	}
 
-	if c.GlobalIsSet("min-following") {
-		config.MinFollowing = c.GlobalInt("min-following")
+	if c.IsSet("min-following") {
+		config.Filter.MinFollowing = c.Int("min-following")
 	}
 
-	if c.GlobalIsSet("max-following") {
-		config.MaxFollowing = c.GlobalInt("max-following")
+	if c.IsSet("max-following") {
+		config.Filter.MaxFollowing = c.Int("max-following")
 	}
 
-	if c.GlobalIsSet("max-tags") {
-		config.MaxTags = c.GlobalInt("max-tags")
+	if c.IsSet("max-tags") {
+		config.Filter.MaxTags = c.Int("max-tags")
 	}
 
-	if c.GlobalIsSet("max-mentions") {
-		config.MaxMentions = c.GlobalInt("max-mentions")
+	if c.IsSet("max-mentions") {
+		config.Filter.MaxMentions = c.Int("max-mentions")
 	}
 
-	if c.GlobalIsSet("retweets") {
-		config.Retweets = c.GlobalBool("retweets")
+	if c.IsSet("retweets") {
+		config.Filter.Retweets = c.Bool("retweets")
 	}
 
-	if c.GlobalIsSet("replies") {
-		config.Replies = c.GlobalBool("replies")
+	if c.IsSet("replies") {
+		config.Filter.Replies = c.Bool("replies")
 	}
 
-	if c.GlobalIsSet("via") {
-		config.Via = c.GlobalBool("via")
+	if c.IsSet("via") {
+		config.Filter.Via = c.Bool("via")
 	}
 
-	if c.GlobalIsSet("urls") {
-		config.URLs = c.GlobalBool("urls")
-	}
-
-	if c.GlobalIsSet("like") {
-		config.Like = c.GlobalBool("like")
-	}
-
-	if c.GlobalIsSet("smart-like") {
-		config.SmartLike = c.GlobalBool("smart-like")
+	if c.IsSet("urls") {
+		config.Filter.URLs = c.Bool("urls")
 	}
 
 	return nil

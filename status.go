@@ -1,11 +1,11 @@
 package tweethog
 
 import (
-	"fmt"
 	"github.com/dghubble/go-twitter/twitter"
 	"strings"
 	"sync"
 	"time"
+	"log"
 )
 
 type Status struct {
@@ -17,7 +17,7 @@ type Status struct {
 }
 
 const (
-	CompactTime = "2006-01-02 15:04:05"
+	CompactTime = "2006/01/02 15:04:05"
 )
 
 type LastAction struct {
@@ -40,63 +40,42 @@ func NewStatus(tweet *twitter.Tweet, stream *Stream) *Status {
 	}
 }
 
-func (status *Status) Handle() {
-	if !status.config.Retweets && status.IsRetweet() {
-		fmt.Print(".")
-		return
+func (status *Status) MatchesFilter(filter *Filters) bool {
+	if !filter.Retweets && status.IsRetweet() {
+		return false
 	}
 
-	if !status.config.Replies && status.IsReply() {
-		fmt.Print(".")
-		return
+	if !filter.Replies && status.IsReply() {
+		return false
 	}
 
-	if !status.config.Via && strings.Contains(status.GetText(), "via @") {
-		fmt.Print(".")
-		return
+	if !filter.Via && strings.Contains(status.GetText(), "via @") {
+		return false
 	}
 
-	if !status.config.URLs && status.ContainsUrl() {
-		fmt.Print(".")
-		return
+	if !filter.URLs && status.ContainsUrl() {
+		return false
 	}
 
-	if (status.GetFollowersCount() > status.config.MaxFollowers && status.config.MaxFollowers > 0) ||
-		status.GetFollowersCount() < status.config.MinFollowers {
-		fmt.Print(".")
-		return
+	if (status.GetFollowersCount() > filter.MaxFollowers && filter.MaxFollowers > 0) ||
+		status.GetFollowersCount() < filter.MinFollowers {
+		return false
 	}
 
-	if (status.GetFriendsCount() > status.config.MaxFollowing && status.config.MaxFollowing > 0) ||
-		status.GetFriendsCount() < status.config.MinFollowing {
-		fmt.Print(".")
-		return
+	if (status.GetFriendsCount() > filter.MaxFollowing && filter.MaxFollowing > 0) ||
+		status.GetFriendsCount() < filter.MinFollowing {
+		return false
 	}
 
-	if strings.Count(status.tweet.Text, "#") > status.config.MaxTags {
-		fmt.Print(".")
-		return
+	if strings.Count(status.GetText(), "#") > filter.MaxTags {
+		return false
 	}
 
-	if strings.Count(status.tweet.Text, "@") > status.config.MaxMentions {
-		fmt.Print(".")
-		return
+	if strings.Count(status.GetText(), "@") > filter.MaxMentions {
+		return false
 	}
 
-	fmt.Printf("\nID: %d  Date: %s  User: @%s  Following: %d  Followers: %d  Likes: %d\n>>> %s\n",
-		status.GetID(),
-		status.GetCreatedAt().Format(CompactTime),
-		status.GetScreenName(),
-		status.GetFriendsCount(),
-		status.GetFollowersCount(),
-		status.GetFavouritesCount(),
-		status.GetText())
-
-	if status.config.SmartLike {
-		go status.SmartLike()
-	} else if status.config.Like {
-		status.Like()
-	}
+	return true
 }
 
 func (status *Status) ContainsUrl() bool {
@@ -141,26 +120,28 @@ func (status *Status) GetText() string {
 	return status.tweet.Text
 }
 
+func (status *Status) GetName() string {
+	return status.tweet.User.Name
+}
+
 func (status *Status) Like() {
 	createParams := &twitter.FavoriteCreateParams{
 		ID: status.GetID(),
 	}
 
 	status.stream.client.Favorites.Create(createParams)
-
-	fmt.Printf("Liked status %d ❤️\n", status.GetID())
 }
 
 func (status *Status) SmartLike() {
 	now := time.Now()
 
 	if lastUserLikeTime, ok := status.lastAction.userNames[status.GetScreenName()]; ok && now.Sub(lastUserLikeTime) < time.Duration(48*time.Hour) {
-		fmt.Println("Skipped Like because of user rate limit 🐷")
+		log.Println("Skipped like because of user rate limit 🐷")
 		return
 	}
 
 	if now.Sub(status.lastAction.lastLike) < time.Duration(120*time.Second) {
-		fmt.Println("Skipped Like because of global rate limit ⏳")
+		log.Println("Skipped like because of global rate limit ⏳")
 		return
 	}
 
@@ -171,7 +152,7 @@ func (status *Status) SmartLike() {
 
 	randomSeconds := time.Duration(GetRandomInt(45, 300))
 
-	fmt.Printf("Going to like status %d after %d seconds ⏰\n", status.GetID(), randomSeconds)
+	log.Printf("Going to like status %d after %d seconds ⏰\n", status.GetID(), randomSeconds)
 
 	time.Sleep(time.Second * randomSeconds)
 
@@ -181,5 +162,5 @@ func (status *Status) SmartLike() {
 
 	status.stream.client.Favorites.Create(createParams)
 
-	fmt.Printf("\nLiked status %d ❤️\n", status.GetID())
+	log.Printf("\nLiked status %d ❤️\n", status.GetID())
 }
