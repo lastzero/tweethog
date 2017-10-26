@@ -9,9 +9,9 @@ import (
 func TestNewStatus(t *testing.T) {
 	tweet := &twitter.Tweet{}
 	config := NewConfig()
-	config.MaxTags = 1234
+	config.Filter.MaxTags = 1234
 	stream := NewStream(config)
 	status := NewStatus(tweet, stream)
-	assert.Equal(t, config.MaxTags, status.config.MaxTags)
+	assert.Equal(t, config.Filter.MaxTags, status.config.Filter.MaxTags)
 	assert.IsType(t, &Status{}, status)
 }
