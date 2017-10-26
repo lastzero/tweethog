@@ -67,9 +67,6 @@ Example Usage
 spooky ass @vauseluthor (Following: 202, Followers: 2320, Likes: 87426)
 what kind of cat was it?
 
-Stina Dark @StinaLeicht (Following: 1157, Followers: 2801, Likes: 41886)
-Project "Inside Cat" has been abandoned. It just wasn't working. Cat cries constantly. I can't work. Dane can't sleep. Cat wins.
-
 Allie @LexxMackenzie (Following: 158, Followers: 204, Likes: 16494)
 Cat Power strums on my soul
 
