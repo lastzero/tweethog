@@ -3,13 +3,11 @@ TweetHog - Stream, filter and react to Twitter status updates
 
 [![Build Status](https://travis-ci.org/lastzero/tweethog.png?branch=master)][ci]
 [![Code Quality](https://goreportcard.com/badge/github.com/lastzero/tweethog)][code quality]
-[![Test Coverage](https://gocover.io/_badge/github.com/lastzero/tweethog)][test coverage]
 [![GitHub issues](https://img.shields.io/github/issues/lastzero/tweethog.svg)][issues]
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)][license]
 
 [ci]: https://travis-ci.org/lastzero/tweethog
 [code quality]: https://travis-ci.org/lastzero/tweethog
-[test coverage]: http://gocover.io/github.com/lastzero/tweethog
 [issues]: https://github.com/lastzero/tweethog/issues
 [license]: https://github.com/lastzero/tweethog/blob/master/LICENSE
 
@@ -62,16 +60,16 @@ Example Usage
 -------------
 ```
 # ./tweethog filter -t cat
-2017/10/26 22:51:41 Starting Twitter stream...
+2017/10/27 07:29:47 Starting Twitter stream...
 
-spooky ass @vauseluthor (Following: 202, Followers: 2320, Likes: 87426)
-what kind of cat was it?
+2017/10/27 07:30:08 m$hawtyyy @xmvdieee (Following: 136, Followers: 167, Likes: 1885)
+someone get me a cat
 
-Allie @LexxMackenzie (Following: 158, Followers: 204, Likes: 16494)
-Cat Power strums on my soul
+2017/10/27 07:30:43 Eldar @Eldurr (Following: 228, Followers: 477, Likes: 3512)
+I need a vacation, just told the cat to get the fuck outta here
 
-322ahsiws @322ahsiws (Following: 13, Followers: 23, Likes: 2)
-Valuethon 3 years ago, I understand your cat photos
+2017/10/27 07:30:50 Oying Alvarado @oyingalvarado (Following: 195, Followers: 9, Likes: 2447)
+There’s a disconcerting lack of cat tweets today
 ```
 
 Commands
@@ -124,6 +122,10 @@ retweets: false
 replies: false
 via: false
 ```
+
+Log as JSON
+-----------
+Use the flag `--json-log` followed by a file name to log matching tweets as newline delimited JSON.
 
 About
 -----
