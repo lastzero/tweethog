@@ -1,11 +1,12 @@
 package tweethog
 
 import (
+	"encoding/json"
 	"github.com/dghubble/go-twitter/twitter"
+	"log"
 	"strings"
 	"sync"
 	"time"
-	"log"
 )
 
 type Status struct {
@@ -132,6 +133,14 @@ func (status *Status) Like() {
 	status.stream.client.Favorites.Create(createParams)
 }
 
+func (status *Status) GetAsJson() (string, error) {
+	if encoded, err := json.Marshal(status.tweet); err != nil {
+		return "", err
+	} else {
+		return string(encoded), nil
+	}
+}
+
 func (status *Status) SmartLike() {
 	now := time.Now()
 
@@ -162,5 +171,5 @@ func (status *Status) SmartLike() {
 
 	status.stream.client.Favorites.Create(createParams)
 
-	log.Printf("\nLiked status %d ❤️\n", status.GetID())
+	log.Printf("Liked status %d ❤️\n", status.GetID())
 }

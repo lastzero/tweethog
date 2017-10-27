@@ -15,6 +15,7 @@ type Config struct {
 
 	// YAML config file name
 	ConfigFile string
+	JsonLog    string
 
 	// Tweet filter
 	Filter *Filters
@@ -101,6 +102,10 @@ func (config *Config) SetValuesFromFile(fileName string) error {
 		config.Filter.URLs = urls
 	}
 
+	if jsonlog, err := yamlConfig.Get("json-log"); err == nil {
+		config.JsonLog = jsonlog
+	}
+
 	return nil
 }
 
@@ -171,6 +176,10 @@ func (config *Config) SetValuesFromCliContext(c *cli.Context) error {
 
 	if c.IsSet("urls") {
 		config.Filter.URLs = c.Bool("urls")
+	}
+
+	if c.IsSet("json-log") {
+		config.JsonLog = c.String("json-log")
 	}
 
 	return nil

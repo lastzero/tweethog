@@ -6,6 +6,7 @@ import (
 	"os"
 	"fmt"
 	"strings"
+	"log"
 )
 
 func main() {
@@ -13,7 +14,7 @@ func main() {
 
 	app := cli.NewApp()
 	app.Usage = "Stream, filter and react to Twitter status updates"
-	app.Version = "0.6.0"
+	app.Version = "0.6.1"
 	app.Copyright = "Michael Mayer <michael@liquidbytes.net>"
 
 	app.Flags = globalCliFlags
@@ -52,7 +53,7 @@ func main() {
 					config,
 					func(status *tweethog.Status) {
 						if status.MatchesFilter(config.Filter) {
-							printTweet(status)
+							printTweet(status, config)
 						}
 					},
 				)
@@ -68,7 +69,7 @@ func main() {
 					config,
 					func(status *tweethog.Status) {
 						if status.MatchesFilter(config.Filter) {
-							printTweet(status)
+							printTweet(status, config)
 
 							status.Like()
 						}
@@ -86,7 +87,7 @@ func main() {
 					config,
 					func(status *tweethog.Status) {
 						if status.MatchesFilter(config.Filter) {
-							printTweet(status)
+							printTweet(status, config)
 
 							go status.SmartLike()
 						}
@@ -99,8 +100,9 @@ func main() {
 	app.Run(os.Args)
 }
 
-func printTweet(status *tweethog.Status) {
-	fmt.Printf("\n%s @%s (Following: %d, Followers: %d, Likes: %d)\n%s\n",
+func printTweet(status *tweethog.Status, config *tweethog.Config) {
+	fmt.Printf("\n%s %s @%s (Following: %d, Followers: %d, Likes: %d)\n%s\n",
+		status.GetCreatedAt().Local().Format(tweethog.CompactTime),
 		status.GetName(),
 		status.GetScreenName(),
 		status.GetFriendsCount(),
@@ -108,6 +110,40 @@ func printTweet(status *tweethog.Status) {
 		status.GetFavouritesCount(),
 		status.GetText(),
 	)
+
+	if config.JsonLog != "" {
+		encoded, err := status.GetAsJson()
+
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		if err := appendLineToLog(config.JsonLog, encoded); err != nil {
+			log.Println(err)
+			return
+		}
+	}
+}
+
+func appendLineToLog(path, text string) error {
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, os.ModeAppend)
+
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+
+	os.Chmod(path, 0600)
+
+	_, err = f.WriteString(text + "\n")
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func startStream(c *cli.Context, config *tweethog.Config, action func(status *tweethog.Status)) error {
@@ -203,5 +239,9 @@ var cliFlags = []cli.Flag{
 	cli.BoolFlag{
 		Name:  "urls",
 		Usage: "Include tweets containing URLs",
+	},
+	cli.StringFlag{
+		Name:  "json-log",
+		Usage: "Log matching tweets as newline delimited JSON",
 	},
 }
