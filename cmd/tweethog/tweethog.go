@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"strings"
 	"log"
+	"os/user"
+	"path/filepath"
 )
 
 func main() {
@@ -14,7 +16,7 @@ func main() {
 
 	app := cli.NewApp()
 	app.Usage = "Stream, filter and react to Twitter status updates"
-	app.Version = "0.6.2"
+	app.Version = "0.6.3"
 	app.Copyright = "Michael Mayer <michael@liquidbytes.net>"
 
 	app.Flags = globalCliFlags
@@ -147,7 +149,15 @@ func appendLineToLog(path, text string) error {
 }
 
 func startStream(c *cli.Context, config *tweethog.Config, action func(status *tweethog.Status)) error {
-	err := config.SetValuesFromFile(c.GlobalString("config-file"))
+	usr, _ := user.Current()
+	dir := usr.HomeDir
+	configFilename := c.GlobalString("config-file")
+
+	if configFilename[:2] == "~/" {
+		configFilename = filepath.Join(dir, configFilename[2:])
+	}
+
+	err := config.SetValuesFromFile(configFilename)
 
 	if err != nil {
 		return cli.NewExitError(err, 1)
@@ -169,8 +179,8 @@ func startStream(c *cli.Context, config *tweethog.Config, action func(status *tw
 var globalCliFlags = []cli.Flag{
 	cli.StringFlag{
 		Name:  "config-file, c",
-		Usage: "YAML config filename",
-		Value: "config.yml",
+		Usage: "Config filename",
+		Value: "~/.tweethog",
 	},
 	cli.StringFlag{
 		Name:  "consumer-key",
