@@ -87,7 +87,7 @@ Global Flags
 
 Name                          | Description
 ------------------------------|------------------------------------------------------------------
---config-file value, -c value | YAML config filename (default: "config.yml")
+--config-file value, -c value | YAML config filename (default: "~/.tweethog")
 --consumer-key value          | Twitter API consumer key
 --consumer-secret value       | Twitter API consumer secret
 --access-token value          | Twitter API access token
