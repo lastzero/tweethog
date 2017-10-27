@@ -46,9 +46,9 @@ Configuration
 -------------
 In order to stream status updates, TweetHog needs access to the Twitter API:
 
-1. Copy [config.example.yml](config.example.yml) to ~/.tweethog
+1. Copy [config.example.yml](config.example.yml) to `~/.tweethog`
 2. Create your own Twitter API keys & tokens on https://apps.twitter.com/app/new
-3. Put them in ~/.tweethog by replacing the placeholders
+3. Put them in `~/.tweethog` by replacing the placeholders
 
 Hint: You can use the `--config-file` flag to use a different config file.
 
