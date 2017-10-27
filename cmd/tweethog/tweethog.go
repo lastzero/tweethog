@@ -14,7 +14,7 @@ func main() {
 
 	app := cli.NewApp()
 	app.Usage = "Stream, filter and react to Twitter status updates"
-	app.Version = "0.6.1"
+	app.Version = "0.6.2"
 	app.Copyright = "Michael Mayer <michael@liquidbytes.net>"
 
 	app.Flags = globalCliFlags
@@ -47,8 +47,8 @@ func main() {
 			Name:  "filter",
 			Usage: "Shows all matching tweets without performing any action",
 			Flags: cliFlags,
-			Action: func(c *cli.Context) {
-				startStream(
+			Action: func(c *cli.Context) error {
+				return startStream(
 					c,
 					config,
 					func(status *tweethog.Status) {
@@ -63,8 +63,8 @@ func main() {
 			Name:  "like",
 			Usage: "Automatically likes all matching tweets",
 			Flags: cliFlags,
-			Action: func(c *cli.Context) {
-				startStream(
+			Action: func(c *cli.Context) error {
+				return startStream(
 					c,
 					config,
 					func(status *tweethog.Status) {
@@ -81,8 +81,8 @@ func main() {
 			Name:  "smartlike",
 			Usage: "Likes tweets with random delay and rate limit",
 			Flags: cliFlags,
-			Action: func(c *cli.Context) {
-				startStream(
+			Action: func(c *cli.Context) error {
+				return startStream(
 					c,
 					config,
 					func(status *tweethog.Status) {
@@ -156,8 +156,7 @@ func startStream(c *cli.Context, config *tweethog.Config, action func(status *tw
 	config.SetValuesFromCliContext(c)
 
 	if len(config.Filter.Topics) == 0 {
-		cli.ShowAppHelp(c)
-		return nil
+		return cli.NewExitError("At least one topic is required, use -h to show available filters", 1)
 	}
 
 	stream := tweethog.NewStream(config)
