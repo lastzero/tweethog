@@ -59,7 +59,7 @@ invalid credentials. See comments.
 Example Usage
 -------------
 ```
-# ./tweethog filter -t cat
+# tweethog filter -t cat
 2017/10/27 07:29:47 Starting Twitter stream...
 
 2017/10/27 07:30:08 m$hawtyyy @xmvdieee (Following: 136, Followers: 167, Likes: 1885)
