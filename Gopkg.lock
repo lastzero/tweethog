@@ -14,6 +14,12 @@
   version = "v1.1.0"
 
 [[projects]]
+  name = "github.com/ddliu/go-httpclient"
+  packages = ["."]
+  revision = "52a7afc73c57c5b898b5514a5467f8d38decd3ed"
+  version = "v0.5.1"
+
+[[projects]]
   branch = "master"
   name = "github.com/dghubble/go-twitter"
   packages = ["twitter"]
@@ -44,6 +50,12 @@
   revision = "08cad365cd28a7fba23bb1e57aa43c5e18ad8bb8"
 
 [[projects]]
+  name = "github.com/mvdan/xurls"
+  packages = ["."]
+  revision = "d315b61cf6727664f310fa87b3197e9faf2a8513"
+  version = "v1.1.0"
+
+[[projects]]
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
@@ -54,6 +66,12 @@
   packages = ["assert"]
   revision = "69483b4bd14f5845b5a1e55bca19e954e827f1d0"
   version = "v1.1.4"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/subosito/shorturl"
+  packages = [".","adfly","base","bitly","catchy","cligs","gggg","gitio","googl","isgd","moourl","pendekin","shorl","snipurl","tinyurl","vamu"]
+  revision = "3dc4cee684914f665399d6a5cddc13b1864b36dd"
 
 [[projects]]
   name = "github.com/urfave/cli"
@@ -70,6 +88,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7a40d1fbe041c4b92bb8211b825e895e52fcaafd126f363ab241679565bf2a53"
+  inputs-digest = "ede9811370d122253e6f2627902a51b6003aee0438e468419bcc2f672c3930d3"
   solver-name = "gps-cdcl"
   solver-version = 1

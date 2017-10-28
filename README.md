@@ -96,6 +96,7 @@ Name                          | Description
 
 Filter Flags
 ------------
+
 Name                          | Description
 ------------------------------|------------------------------------------------------------------
 --topic value, -t value       | Stream filter topic e.g. cat, dog, fish
@@ -110,8 +111,21 @@ Name                          | Description
 --replies                     | Include tweets starting with @
 --via                         | Include tweets containing via @
 --urls                        | Include tweets containing URLs
+--images-only                 | Only tweets containing images
 
-All of the flags above can be set in the config file as a default. Example:
+
+Other Flags
+-----------
+
+Name                          | Description
+------------------------------|------------------------------------------------------------------
+--save-images value           | Save all images in a directory
+--json-log value              | Log matching tweets in a file as newline delimited JSON
+
+Default Values
+--------------
+
+All of the flags can be set in the config file as a default. Example:
 
 ```
 max-mentions: 1
@@ -123,9 +137,7 @@ replies: false
 via: false
 ```
 
-Log as JSON
------------
-Use the flag `--json-log` followed by a file name to log matching tweets as newline delimited JSON.
+Run `tweethog config` to see the current values.
 
 About
 -----

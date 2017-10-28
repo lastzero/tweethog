@@ -16,6 +16,7 @@ type Config struct {
 	// YAML config file name
 	ConfigFile string
 	JsonLog    string
+	SaveImages string
 
 	// Tweet filter
 	Filter *Filters
@@ -34,6 +35,7 @@ type Filters struct {
 	Replies      bool
 	Via          bool
 	URLs         bool
+	ImagesOnly   bool
 }
 
 func NewConfig() *Config {
@@ -48,6 +50,8 @@ func (config *Config) SetValuesFromFile(fileName string) error {
 	if err != nil {
 		return err
 	}
+
+	config.ConfigFile = fileName
 
 	config.ConsumerKey, _ = yamlConfig.Get("consumer-key")
 	config.ConsumerSecret, _ = yamlConfig.Get("consumer-secret")
@@ -102,8 +106,16 @@ func (config *Config) SetValuesFromFile(fileName string) error {
 		config.Filter.URLs = urls
 	}
 
+	if imagesOnly, err := yamlConfig.GetBool("images-only"); err == nil {
+		config.Filter.ImagesOnly = imagesOnly
+	}
+
+	if saveImages, err := yamlConfig.Get("save-images"); err == nil {
+		config.SaveImages = GetExpandedFilename(saveImages)
+	}
+
 	if jsonlog, err := yamlConfig.Get("json-log"); err == nil {
-		config.JsonLog = jsonlog
+		config.JsonLog = GetExpandedFilename(jsonlog)
 	}
 
 	return nil
@@ -178,8 +190,16 @@ func (config *Config) SetValuesFromCliContext(c *cli.Context) error {
 		config.Filter.URLs = c.Bool("urls")
 	}
 
+	if c.IsSet("images-only") {
+		config.Filter.ImagesOnly = c.Bool("images-only")
+	}
+
+	if c.IsSet("save-images") {
+		config.SaveImages = GetExpandedFilename(c.String("save-images"))
+	}
+
 	if c.IsSet("json-log") {
-		config.JsonLog = c.String("json-log")
+		config.JsonLog = GetExpandedFilename(c.String("json-log"))
 	}
 
 	return nil

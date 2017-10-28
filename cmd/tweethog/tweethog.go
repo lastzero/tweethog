@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"strings"
 	"log"
-	"os/user"
-	"path/filepath"
 )
 
 func main() {
@@ -16,7 +14,7 @@ func main() {
 
 	app := cli.NewApp()
 	app.Usage = "Stream, filter and react to Twitter status updates"
-	app.Version = "0.6.3"
+	app.Version = "0.7.0"
 	app.Copyright = "Michael Mayer <michael@liquidbytes.net>"
 
 	app.Flags = globalCliFlags
@@ -27,22 +25,32 @@ func main() {
 			Usage: "Displays all configuration values",
 			Flags: cliFlags,
 			Action: func(c *cli.Context) {
-				config.SetValuesFromFile(c.GlobalString("config-file"))
+				config.SetValuesFromFile(tweethog.GetExpandedFilename(c.GlobalString("config-file")))
 
 				config.SetValuesFromCliContext(c)
 
-				fmt.Printf("Topics        : %s\n", strings.Join(config.Filter.Topics, ", "))
-				fmt.Printf("Languages     : %s\n", strings.Join(config.Filter.Languages, ", "))
-				fmt.Printf("Min followers : %d\n", config.Filter.MinFollowers)
-				fmt.Printf("Max followers : %d\n", config.Filter.MaxFollowers)
-				fmt.Printf("Min following : %d\n", config.Filter.MinFollowing)
-				fmt.Printf("Max following : %d\n", config.Filter.MaxFollowing)
-				fmt.Printf("Max mentions  : %d\n", config.Filter.MaxMentions)
-				fmt.Printf("Max tags      : %d\n", config.Filter.MaxTags)
-				fmt.Printf("URLs          : %t\n", config.Filter.URLs)
-				fmt.Printf("Retweets      : %t\n", config.Filter.Retweets)
-				fmt.Printf("Replies       : %t\n", config.Filter.Replies)
-				fmt.Printf("Via           : %t\n", config.Filter.Via)
+				fmt.Printf("Name              | Value\n")
+				fmt.Printf("------------------|--------------------------------------------------------\n")
+				fmt.Printf("config-file       | %s\n", config.ConfigFile)
+				fmt.Printf("consumer-key      | %s\n", config.ConsumerKey)
+				fmt.Printf("consumer-secret   | %s\n", config.ConsumerSecret)
+				fmt.Printf("access-token      | %s\n", config.AccessToken)
+				fmt.Printf("access-secret     | %s\n", config.AccessSecret)
+				fmt.Printf("topic             | %s\n", strings.Join(config.Filter.Topics, ", "))
+				fmt.Printf("lang              | %s\n", strings.Join(config.Filter.Languages, ", "))
+				fmt.Printf("min-followers     | %d\n", config.Filter.MinFollowers)
+				fmt.Printf("max-followers     | %d\n", config.Filter.MaxFollowers)
+				fmt.Printf("min-following     | %d\n", config.Filter.MinFollowing)
+				fmt.Printf("max-following     | %d\n", config.Filter.MaxFollowing)
+				fmt.Printf("max-tags          | %d\n", config.Filter.MaxTags)
+				fmt.Printf("max-mentions      | %d\n", config.Filter.MaxMentions)
+				fmt.Printf("retweets          | %t\n", config.Filter.Retweets)
+				fmt.Printf("replies           | %t\n", config.Filter.Replies)
+				fmt.Printf("via               | %t\n", config.Filter.Via)
+				fmt.Printf("urls              | %t\n", config.Filter.URLs)
+				fmt.Printf("images-only       | %t\n", config.Filter.ImagesOnly)
+				fmt.Printf("save-images       | %s\n", config.SaveImages)
+				fmt.Printf("json-log          | %s\n", config.JsonLog)
 			},
 		},
 		{
@@ -55,7 +63,7 @@ func main() {
 					config,
 					func(status *tweethog.Status) {
 						if status.MatchesFilter(config.Filter) {
-							printTweet(status, config)
+							handleTweet(status, config)
 						}
 					},
 				)
@@ -71,7 +79,7 @@ func main() {
 					config,
 					func(status *tweethog.Status) {
 						if status.MatchesFilter(config.Filter) {
-							printTweet(status, config)
+							handleTweet(status, config)
 
 							status.Like()
 						}
@@ -89,7 +97,7 @@ func main() {
 					config,
 					func(status *tweethog.Status) {
 						if status.MatchesFilter(config.Filter) {
-							printTweet(status, config)
+							handleTweet(status, config)
 
 							go status.SmartLike()
 						}
@@ -102,7 +110,7 @@ func main() {
 	app.Run(os.Args)
 }
 
-func printTweet(status *tweethog.Status, config *tweethog.Config) {
+func handleTweet(status *tweethog.Status, config *tweethog.Config) {
 	fmt.Printf("\n%s %s @%s (Following: %d, Followers: %d, Likes: %d)\n%s\n",
 		status.GetCreatedAt().Local().Format(tweethog.CompactTime),
 		status.GetName(),
@@ -112,6 +120,14 @@ func printTweet(status *tweethog.Status, config *tweethog.Config) {
 		status.GetFavouritesCount(),
 		status.GetText(),
 	)
+
+	if config.SaveImages != "" {
+		if filename, err := status.SaveImageToFile(config.SaveImages); err != nil {
+			log.Println(err)
+		} else {
+			log.Println("Saved image to " + filename + " 💾")
+		}
+	}
 
 	if config.JsonLog != "" {
 		encoded, err := status.GetAsJson()
@@ -149,15 +165,7 @@ func appendLineToLog(path, text string) error {
 }
 
 func startStream(c *cli.Context, config *tweethog.Config, action func(status *tweethog.Status)) error {
-	usr, _ := user.Current()
-	dir := usr.HomeDir
-	configFilename := c.GlobalString("config-file")
-
-	if configFilename[:2] == "~/" {
-		configFilename = filepath.Join(dir, configFilename[2:])
-	}
-
-	err := config.SetValuesFromFile(configFilename)
+	err := config.SetValuesFromFile(tweethog.GetExpandedFilename(c.GlobalString("config-file")))
 
 	if err != nil {
 		return cli.NewExitError(err, 1)
@@ -249,8 +257,16 @@ var cliFlags = []cli.Flag{
 		Name:  "urls",
 		Usage: "Include tweets containing URLs",
 	},
+	cli.BoolFlag{
+		Name:  "images-only",
+		Usage: "Only tweets containing images",
+	},
+	cli.StringFlag{
+		Name:  "save-images",
+		Usage: "Save all images in a directory",
+	},
 	cli.StringFlag{
 		Name:  "json-log",
-		Usage: "Log matching tweets as newline delimited JSON",
+		Usage: "Log matching tweets in a file as newline delimited JSON",
 	},
 }

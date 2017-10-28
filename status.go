@@ -3,18 +3,27 @@ package tweethog
 import (
 	"encoding/json"
 	"github.com/dghubble/go-twitter/twitter"
-	"log"
-	"strings"
-	"sync"
+	"github.com/subosito/shorturl"
+	"github.com/mvdan/xurls"
+	"github.com/ddliu/go-httpclient"
 	"time"
+	"sync"
+	"strings"
+	"log"
+	"os"
+	"errors"
+	"crypto/md5"
+	"encoding/hex"
 )
 
 type Status struct {
-	tweet      *twitter.Tweet
-	stream     *Stream
-	config     *Config
-	client     *twitter.Client
-	lastAction *LastAction
+	tweet           *twitter.Tweet
+	stream          *Stream
+	config          *Config
+	client          *twitter.Client
+	imageUrl        string
+	imageUrlChecked bool
+	lastAction      *LastAction
 }
 
 const (
@@ -54,10 +63,6 @@ func (status *Status) MatchesFilter(filter *Filters) bool {
 		return false
 	}
 
-	if !filter.URLs && status.ContainsUrl() {
-		return false
-	}
-
 	if (status.GetFollowersCount() > filter.MaxFollowers && filter.MaxFollowers > 0) ||
 		status.GetFollowersCount() < filter.MinFollowers {
 		return false
@@ -76,7 +81,113 @@ func (status *Status) MatchesFilter(filter *Filters) bool {
 		return false
 	}
 
+	if filter.ImagesOnly {
+		return status.ContainsImage()
+	}
+
+	if !filter.URLs && status.ContainsUrl() {
+		return false
+	}
+
 	return true
+}
+
+func (status *Status) GetAllUrls() []string {
+	urls := xurls.Strict.FindAllString(status.GetText(), -1)
+
+	for index, url := range urls {
+		expandedUrl, _ := shorturl.Expand(url)
+		urls[index] = string(expandedUrl)
+	}
+
+	return urls
+}
+
+func (status *Status) ContainsImage() bool {
+	return status.GetImageUrl() != ""
+}
+
+func (status *Status) GetImageUrl() string {
+	if status.imageUrlChecked {
+		return status.imageUrl
+	}
+
+	status.imageUrlChecked = true
+
+	urls := status.GetAllUrls()
+
+	for _, url := range urls {
+		resp, err := httpclient.Get(url, map[string]string{})
+
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+
+		if resp.StatusCode != 200 {
+			continue
+		}
+
+		body, err := resp.ToString()
+
+		if err != nil {
+			log.Println(err)
+		}
+
+		bodyUrls := xurls.Strict.FindAllString(body, -1)
+
+		for _, bodyUrl := range bodyUrls {
+			if strings.Contains(bodyUrl, "https://pbs.twimg.com/media/") && strings.Contains(bodyUrl, ":large") {
+				status.imageUrl = bodyUrl
+				return bodyUrl
+			}
+		}
+	}
+
+	return ""
+}
+
+func (status *Status) SaveImageToFile(path string) (string, error) {
+	if !status.ContainsImage() {
+		return "", errors.New("contains no image")
+	}
+
+	imageUrl := status.GetImageUrl()
+	resp, err := httpclient.Get(imageUrl, map[string]string{})
+
+	if err != nil {
+		return "", err
+	} else if resp.StatusCode != 200 {
+		return "", errors.New("could not download image")
+	}
+
+	imageBytes, err := resp.ReadAll()
+
+	if err != nil {
+		return "", err
+	}
+
+	hasher := md5.New()
+	hasher.Write(imageBytes)
+	hash := hex.EncodeToString(hasher.Sum(nil))
+
+	filename := path + "/" + hash + ".jpg"
+
+	f, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, os.ModePerm)
+
+	if err != nil {
+		return "", err
+	}
+
+	defer f.Close()
+
+	_, err = f.Write(imageBytes)
+
+	if err != nil {
+		return "", err
+	}
+
+	return filename, nil
 }
 
 func (status *Status) ContainsUrl() bool {
@@ -85,6 +196,10 @@ func (status *Status) ContainsUrl() bool {
 
 func (status *Status) GetID() int64 {
 	return status.tweet.ID
+}
+
+func (status *Status) GetIDString() string {
+	return status.tweet.IDStr
 }
 
 func (status *Status) GetCreatedAt() *time.Time {
