@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/subosito/shorturl"
-	"github.com/mvdan/xurls"
+	"mvdan.cc/xurls"
 	"github.com/ddliu/go-httpclient"
 	"time"
 	"sync"
