@@ -23,4 +23,5 @@ Thumbs.db
 .settings
 .swp
 .tmp
-/vendor/
+/vendor/github.com
+/vendor/golang.org

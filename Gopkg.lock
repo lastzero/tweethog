@@ -50,12 +50,6 @@
   revision = "08cad365cd28a7fba23bb1e57aa43c5e18ad8bb8"
 
 [[projects]]
-  name = "github.com/mvdan/xurls"
-  packages = ["."]
-  revision = "d315b61cf6727664f310fa87b3197e9faf2a8513"
-  version = "v1.1.0"
-
-[[projects]]
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
@@ -94,6 +88,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "925321499909ed47c322d56bf76b7870bc8183efbd0220c72e364ecbdd04f394"
+  inputs-digest = "55d3d5f212f6d88bd42a9b2e9d9226a472a3918688e8b585b86f00b2f1122692"
   solver-name = "gps-cdcl"
   solver-version = 1
