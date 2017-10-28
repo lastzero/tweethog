@@ -14,6 +14,7 @@ import (
 	"errors"
 	"crypto/md5"
 	"encoding/hex"
+	"golang.org/x/net/html"
 )
 
 type Status struct {
@@ -233,7 +234,7 @@ func (status *Status) GetFavouritesCount() int {
 }
 
 func (status *Status) GetText() string {
-	return status.tweet.Text
+	return html.UnescapeString(status.tweet.Text)
 }
 
 func (status *Status) GetName() string {
