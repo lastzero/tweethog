@@ -78,7 +78,7 @@ Commands
 Command   | Description
 ----------|-------------------------------------------------------------
 config    | Displays all configuration values
-auth      | Requests a user auth token for the Twitter API
+auth      | Requests a user access token and secret for the Twitter API
 filter    | Shows all matching tweets without performing any action
 like      | Automatically likes all matching tweets
 follow    | Automatically follows all users with matching tweets

@@ -55,7 +55,7 @@ func main() {
 		},
 		{
 			Name:  "auth",
-			Usage: "Requests a user auth token for the Twitter API",
+			Usage: "Requests a user access token and secret for the Twitter API",
 			Flags: []cli.Flag{},
 			Action: func(c *cli.Context) {
 				config.SetValuesFromFile(tweethog.GetExpandedFilename(c.GlobalString("config-file")))
@@ -235,11 +235,11 @@ var globalCliFlags = []cli.Flag{
 	},
 	cli.StringFlag{
 		Name:  "access-token",
-		Usage: "Twitter API access token",
+		Usage: "Twitter API user access token",
 	},
 	cli.StringFlag{
 		Name:  "access-secret",
-		Usage: "Twitter API access token secret",
+		Usage: "Twitter API user access token secret",
 	},
 }
 
