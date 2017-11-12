@@ -78,8 +78,10 @@ Commands
 Command   | Description
 ----------|-------------------------------------------------------------
 config    | Displays all configuration values
+auth      | Requests a user auth token for the Twitter API
 filter    | Shows all matching tweets without performing any action
 like      | Automatically likes all matching tweets
+follow    | Automatically follows all users with matching tweets
 smartlike | Likes tweets with random delay and rate limit
 
 Global Flags
