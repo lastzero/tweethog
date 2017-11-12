@@ -92,8 +92,8 @@ Name                          | Description
 --config-file value, -c value | YAML config filename (default: "~/.tweethog")
 --consumer-key value          | Twitter API consumer key
 --consumer-secret value       | Twitter API consumer secret
---access-token value          | Twitter API access token
---access-secret value         | Twitter API access token secret
+--access-token value          | Twitter API user access token
+--access-secret value         | Twitter API user access token secret
 
 
 Filter Flags
