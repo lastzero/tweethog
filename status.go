@@ -249,6 +249,14 @@ func (status *Status) Like() {
 	status.stream.client.Favorites.Create(createParams)
 }
 
+func (status *Status) Follow() {
+	createParams := &twitter.FriendshipCreateParams{
+		UserID: status.tweet.User.ID,
+	}
+
+	status.stream.client.Friendships.Create(createParams)
+}
+
 func (status *Status) GetAsJson() (string, error) {
 	if encoded, err := json.Marshal(status.tweet); err != nil {
 		return "", err

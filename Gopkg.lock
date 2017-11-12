@@ -27,7 +27,7 @@
 
 [[projects]]
   name = "github.com/dghubble/oauth1"
-  packages = ["."]
+  packages = [".","twitter"]
   revision = "70562a5920ad9b6ff03ef697c0f90ae569abbd2b"
   version = "v0.4.0"
 
@@ -88,6 +88,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "eb7363590135c87fc533ba8055e507fbc5b205f5d4e3b390e54ef0c525ce9485"
+  inputs-digest = "affac1d818384222b0c715c1e0b427f850e6aed82b5ef00daecffcac1f6a3ef1"
   solver-name = "gps-cdcl"
   solver-version = 1

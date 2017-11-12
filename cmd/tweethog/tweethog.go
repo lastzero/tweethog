@@ -14,7 +14,7 @@ func main() {
 
 	app := cli.NewApp()
 	app.Usage = "Stream, filter and react to Twitter status updates"
-	app.Version = "0.7.0"
+	app.Version = "0.8.0"
 	app.Copyright = "Michael Mayer <michael@liquidbytes.net>"
 
 	app.Flags = globalCliFlags
@@ -54,6 +54,18 @@ func main() {
 			},
 		},
 		{
+			Name:  "auth",
+			Usage: "Requests a user auth token for the Twitter API",
+			Flags: []cli.Flag{},
+			Action: func(c *cli.Context) {
+				config.SetValuesFromFile(tweethog.GetExpandedFilename(c.GlobalString("config-file")))
+
+				config.SetValuesFromCliContext(c)
+
+				tweethog.CliAuth(config.ConsumerKey, config.ConsumerSecret)
+			},
+		},
+		{
 			Name:  "filter",
 			Usage: "Shows all matching tweets without performing any action",
 			Flags: cliFlags,
@@ -82,6 +94,29 @@ func main() {
 							handleTweet(status, config)
 
 							status.Like()
+
+							log.Printf("Liked status ❤️\n")
+
+						}
+					},
+				)
+			},
+		},
+		{
+			Name:  "follow",
+			Usage: "Automatically follows all users with matching tweets",
+			Flags: cliFlags,
+			Action: func(c *cli.Context) error {
+				return startStream(
+					c,
+					config,
+					func(status *tweethog.Status) {
+						if status.MatchesFilter(config.Filter) {
+							handleTweet(status, config)
+
+							status.Follow()
+
+							log.Printf("Followed user @%s 🐷\n", status.GetScreenName())
 						}
 					},
 				)
