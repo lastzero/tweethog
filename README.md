@@ -12,7 +12,7 @@ TweetHog - Stream, filter and react to Twitter status updates
 [license]: https://github.com/lastzero/tweethog/blob/master/LICENSE
 
 This tool provides an easy way to stream, filter and optionally
-react to tweets based on topic, language and user profile. It is similar
+react (like, follow, save image, log,...) to tweets based on topic, language and user profile. It is similar
 to commercial SaaS offerings such as TweetFull, RoboLike or Twitfox. However...
 
 * TweetHog is free, fast and doesn't require setting up a server
