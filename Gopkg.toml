@@ -27,9 +27,12 @@
 
 [[constraint]]
   name = "github.com/dghubble/go-twitter"
+  branch = "master"
 
 [[constraint]]
   name = "github.com/dghubble/oauth1"
+  branch = "master"
 
 [[constraint]]
   name = "github.com/kylelemons/go-gypsy"
+  branch = "master"

@@ -26,10 +26,13 @@
   revision = "c4115fa44a928413e0b857e0eb47376ffde3a61a"
 
 [[projects]]
+  branch = "master"
   name = "github.com/dghubble/oauth1"
-  packages = [".","twitter"]
-  revision = "70562a5920ad9b6ff03ef697c0f90ae569abbd2b"
-  version = "v0.4.0"
+  packages = [
+    ".",
+    "twitter"
+  ]
+  revision = "c0a405baf29f5ed2616bc1ef6b778532c960aa5b"
 
 [[projects]]
   name = "github.com/dghubble/sling"
@@ -64,7 +67,24 @@
 [[projects]]
   branch = "master"
   name = "github.com/subosito/shorturl"
-  packages = [".","adfly","base","bitly","catchy","cligs","gggg","gitio","googl","isgd","moourl","pendekin","shorl","snipurl","tinyurl","vamu"]
+  packages = [
+    ".",
+    "adfly",
+    "base",
+    "bitly",
+    "catchy",
+    "cligs",
+    "gggg",
+    "gitio",
+    "googl",
+    "isgd",
+    "moourl",
+    "pendekin",
+    "shorl",
+    "snipurl",
+    "tinyurl",
+    "vamu"
+  ]
   revision = "3dc4cee684914f665399d6a5cddc13b1864b36dd"
 
 [[projects]]
@@ -76,7 +96,11 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["context","html","html/atom"]
+  packages = [
+    "context",
+    "html",
+    "html/atom"
+  ]
   revision = "92447d55896d6f92b4a0d4fd83bd078b0374e8fa"
 
 [[projects]]
@@ -88,6 +112,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "affac1d818384222b0c715c1e0b427f850e6aed82b5ef00daecffcac1f6a3ef1"
+  inputs-digest = "1cb96518ec90ad1cf10c7bd55dbb4a067deb24656b03f9b99b9bd31803c315b3"
   solver-name = "gps-cdcl"
   solver-version = 1

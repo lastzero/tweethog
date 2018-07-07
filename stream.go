@@ -45,7 +45,7 @@ func (stream *Stream) Start(action func(status *Status)) error {
 	// FILTER
 	filterParams := &twitter.StreamFilterParams{
 		Track:         stream.config.Filter.Topics,
-		StallWarnings: twitter.Bool(false),
+		StallWarnings: twitter.Bool(true),
 		Language:      stream.config.Filter.Languages,
 	}
 
