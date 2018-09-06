@@ -14,7 +14,7 @@ func main() {
 
 	app := cli.NewApp()
 	app.Usage = "Stream, filter and react to Twitter status updates"
-	app.Version = "0.8.0"
+	app.Version = "0.8.1"
 	app.Copyright = "Michael Mayer <michael@liquidbytes.net>"
 
 	app.Flags = globalCliFlags

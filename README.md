@@ -23,7 +23,7 @@ to commercial SaaS offerings such as TweetFull, RoboLike or Twitfox. However...
 
 Installation
 ------------
-Make sure you got Go version >= 1.9 installed on your computer.
+Make sure you got Go version >= 1.11 installed on your computer.
 It can be downloaded for free at https://golang.org/dl/.
 You might need to install Xcode and agree to its license first on OS X.
 
