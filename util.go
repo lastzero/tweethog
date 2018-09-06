@@ -2,9 +2,9 @@ package tweethog
 
 import (
 	"math/rand"
-	"time"
 	"os/user"
 	"path/filepath"
+	"time"
 )
 
 func GetRandomInt(min, max int) int {

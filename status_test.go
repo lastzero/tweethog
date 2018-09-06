@@ -18,9 +18,9 @@ func TestNewStatus(t *testing.T) {
 
 func TestStatus_GetId(t *testing.T) {
 	tweet := &twitter.Tweet{
-		ID: int64(123),
+		ID:    int64(123),
 		IDStr: "356",
-		Text: "I love https://twitter.com/i/web/status/923880846393790467",
+		Text:  "I love https://twitter.com/i/web/status/923880846393790467",
 	}
 
 	config := NewConfig()

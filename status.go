@@ -1,20 +1,20 @@
 package tweethog
 
 import (
-	"encoding/json"
-	"github.com/dghubble/go-twitter/twitter"
-	"github.com/subosito/shorturl"
-	"mvdan.cc/xurls"
-	"github.com/ddliu/go-httpclient"
-	"time"
-	"sync"
-	"strings"
-	"log"
-	"os"
-	"errors"
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"github.com/ddliu/go-httpclient"
+	"github.com/dghubble/go-twitter/twitter"
+	"github.com/subosito/shorturl"
 	"golang.org/x/net/html"
+	"log"
+	"mvdan.cc/xurls"
+	"os"
+	"strings"
+	"sync"
+	"time"
 )
 
 type Status struct {

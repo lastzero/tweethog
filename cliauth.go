@@ -2,9 +2,9 @@ package tweethog
 
 import (
 	"fmt"
-	"log"
 	"github.com/dghubble/oauth1"
 	twauth "github.com/dghubble/oauth1/twitter"
+	"log"
 )
 
 func CliAuth(consumerKey string, consumerSecret string) {

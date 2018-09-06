@@ -1,12 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"github.com/lastzero/tweethog"
 	"github.com/urfave/cli"
-	"os"
-	"fmt"
-	"strings"
 	"log"
+	"os"
+	"strings"
 )
 
 func main() {
